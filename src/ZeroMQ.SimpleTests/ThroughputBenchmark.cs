@@ -58,9 +58,8 @@
                     long messageThroughput = MessageCount * Stopwatch.Frequency / elapsedTime;
                     long megabitThroughput = messageThroughput * messageSize * 8 / 1000000;
 
-                    Console.WriteLine("Message size: {0} [B]", messageSize);
-                    Console.WriteLine("Average throughput: {0} [msg/s]", messageThroughput);
-                    Console.WriteLine("Average throughput: {0} [Mb/s]", megabitThroughput);
+                    Console.WriteLine("MsgSz: {0,6}, Avg throughput: {1,7} msg/s, {2,5} Mb/s",
+                        messageSize, messageThroughput, megabitThroughput);
                 }
             }
         }

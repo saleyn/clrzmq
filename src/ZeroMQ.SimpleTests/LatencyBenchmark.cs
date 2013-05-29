@@ -7,8 +7,14 @@
     internal class LatencyBenchmark : ITest
     {
         private const int RoundtripCount = 10000;
+        private bool UseInproc = false;
 
         private static readonly int[] MessageSizes = { 8, 64, 512, 4096, 8192, 16384, 32768 };
+
+        public LatencyBenchmark(bool Inproc = false)
+        {
+            UseInproc = Inproc;
+        }
 
         public string TestName
         {
@@ -23,19 +29,19 @@
             client.Name = "Client";
             server.Name = "Server";
 
-            server.Start();
-            client.Start();
+            server.Start(UseInproc);
+            client.Start(UseInproc);
 
             server.Join(5000);
             client.Join(5000);
         }
 
-        private static void ClientThread()
+        private static void ClientThread(object UseInproc)
         {
             using (var context = ZmqContext.Create())
             using (var socket = context.CreateSocket(SocketType.REQ))
             {
-                socket.Connect("tcp://localhost:9000");
+                socket.Connect((bool)UseInproc ? "inproc://abc" : "tcp://localhost:9000");
 
                 foreach (int messageSize in MessageSizes)
                 {
@@ -59,21 +65,19 @@
                     watch.Stop();
                     long elapsedTime = watch.ElapsedTicks;
 
-                    Console.WriteLine("Message size: " + messageSize + " [B]");
-                    Console.WriteLine("Roundtrips: " + RoundtripCount);
-
                     double latency = (double)elapsedTime / RoundtripCount / 2 * 1000000 / Stopwatch.Frequency;
-                    Console.WriteLine("Your average latency is {0} [us]", latency.ToString("f2"));
+                    Console.WriteLine("Roundtrips: {0}, MsgSz: {1,5}, Latency: {2,6} us",
+                        RoundtripCount, messageSize, latency.ToString("f2"));
                 }
             }
         }
 
-        private static void ServerThread()
+        private static void ServerThread(object UseInproc)
         {
             using (var context = ZmqContext.Create())
             using (var socket = context.CreateSocket(SocketType.REP))
             {
-                socket.Bind("tcp://*:9000");
+                socket.Bind((bool)UseInproc ? "inproc://abc" : "tcp://*:9000");
 
                 foreach (int messageSize in MessageSizes)
                 {

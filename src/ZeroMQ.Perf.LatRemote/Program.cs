@@ -48,13 +48,13 @@
                 }
 
                 watch.Stop();
-                long elapsedTime = watch.ElapsedTicks;
+                long elapsedUsec = watch.ElapsedTicks * 1000000 / Stopwatch.Frequency;
 
-                Console.WriteLine("message size: " + messageSize + " [B]");
-                Console.WriteLine("roundtrip count: " + roundtripCount);
+                double latency = (double)elapsedUsec / roundtripCount / 2;
+                long   trans   = roundtripCount * 1000000 / elapsedUsec;
 
-                double latency = (double)elapsedTime / roundtripCount / 2 * 1000000 / Stopwatch.Frequency;
-                Console.WriteLine("Your average latency is {0} [us]", latency.ToString("f2"));
+                Console.WriteLine("Roundtrips: {0}, MsgSz: {1,5}, Latency: {2,6} us, Trans/s: {3,6}",
+                    roundtripCount, messageSize, latency.ToString("f2"), trans);
             }
 
             return 0;

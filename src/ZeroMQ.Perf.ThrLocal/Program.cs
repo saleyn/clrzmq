@@ -58,6 +58,8 @@
 
             Console.WriteLine("Average throughput: {0} [msg/s]", messageThroughput);
             Console.WriteLine("Average throughput: {0} [Mb/s]", megabitThroughput);
+            Console.WriteLine("Msgs: {0,7}, MsgSz: {1,6}, Msgs/s: {2,6} , Throughput: {3,6} Mb/s",
+                messageCount, messageSize, latency.ToString("f2"), trans);
 
             return 0;
         }
