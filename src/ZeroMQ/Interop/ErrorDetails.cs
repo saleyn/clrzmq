@@ -1,6 +1,6 @@
 ﻿namespace ZeroMQ.Interop
 {
-    internal class ErrorDetails
+    public class ErrorDetails
     {
         public ErrorDetails(int errorCode, string message)
         {

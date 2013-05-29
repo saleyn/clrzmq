@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
 
-    internal static class ErrorProxy
+    public static class ErrorProxy
     {
         private static readonly Dictionary<int, ErrorDetails> KnownErrors = new Dictionary<int, ErrorDetails>();
 

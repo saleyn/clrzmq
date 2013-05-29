@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal sealed class ZmqMsgT : IDisposable
+    public sealed class ZmqMsgT : IDisposable
     {
         private DisposableIntPtr _ptr;
         private bool _initialized;
@@ -62,6 +62,32 @@
         public IntPtr Data()
         {
             return LibZmq.zmq_msg_data(_ptr);
+        }
+
+        public int Move(ZmqMsgT dest)
+        {
+            if (!_initialized)
+            {
+                dest.Close();
+                return 0;
+            }
+
+            int rc = LibZmq.zmq_msg_move(dest._ptr, _ptr);
+            dest._initialized = rc == 0;
+            return rc;
+        }
+
+        public int Copy(ZmqMsgT dest)
+        {
+            if (!_initialized)
+            {
+                dest.Close();
+                return 0;
+            }
+
+            int rc = LibZmq.zmq_msg_copy(dest._ptr, _ptr);
+            dest._initialized = rc == 0;
+            return rc;
         }
 
         public void Dispose()

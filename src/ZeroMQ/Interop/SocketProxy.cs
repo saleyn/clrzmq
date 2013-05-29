@@ -119,6 +119,29 @@
             return bytesReceived;
         }
 
+        /// <summary>
+        /// Receive a message in the space provided by msg.
+        /// </summary>
+        /// <param name="msg">Message is received in this parameter.  The caller is responsible for
+        /// closing the message by calling msg.Close()</param>
+        /// <param name="flags">Flags to pass to implementation</param>
+        /// <returns>Number of bytes received or a negative value in case of an error</returns>
+        public int Receive(ZmqMsgT msg, int flags)
+        {
+            if (msg.Init() == -1)
+                return -1;
+
+            int bytesReceived = Retry.IfInterrupted(LibZmq.zmq_msg_recv.Invoke, msg.Ptr, SocketHandle, flags);
+
+            if (bytesReceived == 0 && LibZmq.MajorVersion < 3)
+            {
+                // 0MQ 2.x does not return number of bytes received
+                bytesReceived = msg.Size();
+            }
+
+            return bytesReceived;
+        }
+
         public byte[] Receive(byte[] buffer, int flags, out int size)
         {
             size = -1;
@@ -128,16 +151,10 @@
                 return buffer;
             }
 
-            int bytesReceived = Retry.IfInterrupted(LibZmq.zmq_msg_recv.Invoke, _msg.Ptr, SocketHandle, flags);
+            int bytesReceived = Receive(_msg, flags);
 
             if (bytesReceived >= 0)
             {
-                if (bytesReceived == 0 && LibZmq.MajorVersion < 3)
-                {
-                    // 0MQ 2.x does not return number of bytes received
-                    bytesReceived = _msg.Size();
-                }
-
                 size = bytesReceived;
 
                 if (buffer == null || size > buffer.Length)

@@ -705,6 +705,24 @@
         }
 
         /// <summary>
+        /// Receive a message in the space provided by msg.
+        /// </summary>
+        /// <remarks>
+        /// This overload is intended only for integration with 3rd party libraries that need
+        /// access to the low-level ZmqMsgT structure to avoid extra copying.
+        /// </remarks>
+        /// <param name="msg">Message is received in this parameter.  The caller is responsible for
+        /// closing the message by calling msg.Close()</param>
+        /// <param name="flags">Flags to pass to implementation</param>
+        /// <returns>Number of bytes received or a negative value in case of an error</returns>
+        public virtual int Receive(ZmqMsgT msg, SocketFlags flags)
+        {
+            EnsureNotDisposed();
+
+            return _socketProxy.Receive(msg, (int)flags);
+        }
+
+        /// <summary>
         /// Queue a message buffer to be sent by the socket in blocking mode.
         /// </summary>
         /// <remarks>
