@@ -3,7 +3,7 @@
     using System;
 
     [Flags]
-    internal enum PollEvents : short
+    public enum PollEvents : short
     {
         None = 0x0,
         PollIn = 0x1,

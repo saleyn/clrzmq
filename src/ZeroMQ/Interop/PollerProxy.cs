@@ -1,6 +1,6 @@
 ﻿namespace ZeroMQ.Interop
 {
-    internal class PollerProxy
+    public class PollerProxy
     {
         public int Poll(PollItem[] pollItems, int timeoutMilliseconds)
         {

@@ -4,7 +4,7 @@
     using System.Runtime.InteropServices;
 
     [StructLayout(LayoutKind.Sequential)]
-    internal struct PollItem : IEquatable<PollItem>
+    public struct PollItem : IEquatable<PollItem>
     {
         public IntPtr Socket;
 #if UNIX

@@ -375,7 +375,7 @@
             get { return _socketProxy; }
         }
 
-        internal IntPtr SocketHandle
+        public IntPtr SocketHandle
         {
             get { return _socketProxy.SocketHandle; }
         }
